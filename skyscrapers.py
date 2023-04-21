@@ -34,25 +34,41 @@ class Skyscrapers(object):
         # EDIT HERE: If you need to initialize anything that should be shared across `solve` and `check_multiple`
         # feel free to add it here
 
+        
+
     def skyscraper_counter(self, cells, clue):
-        max_seen = Int('max_seen')
-        self.s.add(max_seen == -1)
-        count = Int('count')
-        self.s.add(count == 0)
+        # max_seen = Int('max_seen')
+        # self.s.add(max_seen == -1)
+        # count = Int('count')
+        # self.s.add(count == 0)
 
-        for i in range(self.N):
-            num = cells[i]
-            new_max_seen = Int('new_max_seen_{}'.format(i))
-            new_count = Int('new_count_{}'.format(i))
+        # for i in range(self.N):
+        #     num = cells[i]
+        #     new_max_seen = Int('new_max_seen_{}'.format(i))
+        #     new_count = Int('new_count_{}'.format(i))
 
-            self.s.add(If(num > max_seen, new_max_seen == num, new_max_seen == max_seen))
-            self.s.add(If(num > max_seen, new_count == count + 1, new_count == count))
+        #     self.s.add(If(num > max_seen, new_max_seen == num, new_max_seen == max_seen))
+        #     self.s.add(If(num > max_seen, new_count == count + 1, new_count == count))
 
-            max_seen = new_max_seen
-            count = new_count
+        #     max_seen = new_max_seen
+        #     count = new_count
 
-        self.s.add(count == clue)
+        # self.s.add(count == clue)
 
+        # Return maximum of a vector; error if empty
+        def max(vs):
+            m = vs[0]
+            for v in vs[1:]:
+                m = If(v > m, v, m)
+            return m
+
+        # there should be X number of cells that have only smaller cells in front of it
+
+        print([(cells[i] >= max(cells[:i])) for i in range(self.N) if i>0])
+        self.s.add(Sum([If(cells[i] > max(cells[:i]), 1, 0) for i in range(self.N) if i>0]) == clue-1)
+
+        
+        
     def solve(self):
         """PART 1"""
 
@@ -124,8 +140,23 @@ if __name__ == "__main__":
         dict(wall=0, index=1, clue=4),
         dict(wall=1, index=2, clue=3),
         dict(wall=2, index=3, clue=3),
-
     ]
+
+    
+    '''
+      -  -  3  -
+    -    4  2  1
+    4 1  2  3  4
+    - 4  3  1  2  3
+    -    1  4
+    
+      -  4  -  -
+    -    1  4  3  -
+    -    2  3  4  -
+    - 4  3  1  2  3
+    -    4    1  -
+      -  -  -  3
+    '''
 
 
     skyscraper = Skyscrapers(4, game_data_example)

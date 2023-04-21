@@ -65,7 +65,15 @@ class Skyscrapers(object):
         # there should be X number of cells that have only smaller cells in front of it
 
         print([(cells[i] >= max(cells[:i])) for i in range(self.N) if i>0])
+        
         self.s.add(Sum([If(cells[i] > max(cells[:i]), 1, 0) for i in range(self.N) if i>0]) == clue-1)
+
+        # Sum([If(cells[i] > max(cells[:i]), 1, 0) for i in range(self.N) if i>0]) == clue-1 : a breakdown
+
+        # max(cells[:i]) gives max of cells up to index i
+        # If(cells[i] > max(cells[:i]), 1, 0) returns 1 if the number at i is greater than all numbers "before it"
+        # Sum(... for i in range(...)) returns number of cells in this row/col which are greater than all predecessors, excluding the first cell which is always visible
+        #  == clue - 1 : the -1 is because the above calculation doesnt include the very first cell which is always visible no matter what        
 
         
         

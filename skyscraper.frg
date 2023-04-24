@@ -32,7 +32,16 @@ sig Constraint {
 // fun leftChop[s : Smith]: Chopstick { Table.chops[Table.smiths.s] }
 // fun rightChop[s : Smith]: Chopstick { Table.chops[remainder[add[Table.smiths.s, 1], 5]] }
 
+pred withinBounds[n : Int] {
+  n > 0
+  n <= Board.size
+}
+
 pred boardSetup {
+
+  all i,j : Int | {
+    ((!withinBounds[i]) or (!withinBounds[j]))=> {no Board.position[i][j]}
+  }
 
   all c:Cell | {
     // If you go to that row/col you get the cell
@@ -52,16 +61,16 @@ pred boardSetup {
   all r: Int |{
     // unique vals across rows
     all disj a, b: Int | {
-        (Board.position[r][a]).val != (Board.position[r][b]).val
+        (withinBounds[a] and withinBounds[b]) => (Board.position[r][a]).val != (Board.position[r][b]).val
     }
   }
 
-  all c: Int |{
-    // unique vals across cols
-    all disj a, b: Int | {
-        (Board.position[a][c]).val != (Board.position[b][c]).val
-    }
-  }
+  // all c: Int |{
+  //   // unique vals across cols
+  //   all disj a, b: Int | {
+  //       (Board.position[a][c]).val != (Board.position[b][c]).val
+  //   }
+  // }
 
   all disj c1,c2 : Cell | {
     // all cells in different pos
@@ -79,7 +88,7 @@ pred obeysConstraint[c : one Constraint] {
 
 // here, fill in the board situation
 pred boardConstraints {
-  // Board.size = 2
+  Board.size = 2
 }
 
 run {

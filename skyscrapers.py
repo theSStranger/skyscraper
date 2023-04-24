@@ -55,7 +55,7 @@ class Skyscrapers(object):
 
         # self.s.add(count == clue)
 
-        # Return maximum of a vector; error if empty
+        # Return maximum of a vector; error if empty, stolen from https://stackoverflow.com/questions/67043494/max-and-min-of-a-set-of-variables-in-z3py
         def max(vs):
             m = vs[0]
             for v in vs[1:]:
@@ -150,6 +150,7 @@ if __name__ == "__main__":
         dict(wall=2, index=3, clue=3),
     ]
 
+    # skyscraper = Skyscrapers(4, game_data_example)
     
     '''
       -  -  3  -
@@ -165,9 +166,20 @@ if __name__ == "__main__":
     -    4    1  -
       -  -  -  3
     '''
+    game_data_hard = [
+        dict(wall=0, index=1, clue=3),
+        dict(wall=0, index=5, clue=3),
+        dict(wall=1, index=0, clue=3),
+        dict(wall=1, index=1, clue=3),
+        dict(wall=1, index=2, clue=3),
+        dict(wall=1, index=4, clue=2),
+        dict(wall=1, index=5, clue=3),
+        dict(wall=2, index=1, clue=3),
+        dict(wall=2, index=2, clue=5),
+        dict(wall=2, index=3, clue=4)
+    ]
 
-
-    skyscraper = Skyscrapers(4, game_data_example)
+    skyscraper = Skyscrapers(6, game_data_hard)
 
 
     # PART 1

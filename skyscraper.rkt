@@ -46,19 +46,6 @@ pred withinBounds[n : Int] {
 // Sets up the game and the basic board rules 
 // (all constraints that are not specific to a single puzzle instance)
 pred boardSetup {
-  Board.size = 4
-  
-  // constraints are valid
-  all c: Constraint | {
-    withinBounds[c.index]
-    c.hint > 0
-    c.hint <= Board.size
-  }
-
-  // cant have 2 constraints on the same slot
-  all disj c1, c2: Constraint | {
-    (c1.wall != c2.wall) or (c1.index !=  c2.index) 
-  }
 
   all c:Cell | {
     // If you go to that row/col you get the cell
@@ -135,34 +122,25 @@ pred obeysConstraint[const : one Constraint] {
 
 
 // here, fill in the board situation
-pred puzzleConstraints {
+pred boardConstraints {
+  Board.size = 4
+  one c: Constraint | {
+    c.wall = Top
+    c.index = 0
+    c.hint = 4
+  }
 
-  // one c: Constraint | {
-  //   c.wall = Top
-  //   c.index = 0
-  //   c.hint = 4
-  // }
-
-  // one c: Constraint | {
-  //   c.wall = Lft
-  //   c.index = 2
-  //   c.hint = 2
-  // }
-}
-
-pred diagonal {
-  all i:Int | {
-    withinBounds[i] => {
-      (Board.position[i][i]).val = 4
-    }
+  one c: Constraint | {
+    c.wall = Lft
+    c.index = 2
+    c.hint = 2
   }
 }
 
 run {
-  puzzleConstraints
+  boardConstraints
   boardSetup
   all c:Constraint | {
     obeysConstraint[c]
   }
-  diagonal
-} for exactly 16 Cell
+} for exactly 16 Cell, 2 Constraint

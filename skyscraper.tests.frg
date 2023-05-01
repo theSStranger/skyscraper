@@ -1,3 +1,9 @@
+#lang forge
+
+open "skyscraper.frg"
+
+// open "common_definitions.frg"
+
 pred addConstraint[w:Wall, i:Int, h:Int] {
   one c: Constraint | {
     c.wall = w
@@ -6,10 +12,15 @@ pred addConstraint[w:Wall, i:Int, h:Int] {
   }
 }
 
-test expect {
-  vacuity: {boardConstraints}
-}
+test suite for boardSetup {
+  test expect {
+    vacuity: {boardSetup[4]} for exactly 16 Cell is sat
 
+    vacuity2: {boardSetup[4] and puzzleConstraints} for exactly 16 Cell is sat
+
+    conflictingConstr: {boardSetup[4] and puzzleConstraints and satsConstraints and addConstraint[Top, 1, 4] and addConstraint[Bot, 1, 4]} for exactly 16 Cell is unsat
+  }
+}
 // test suite for GWNeverEating {
   
 //     // TODO: Write 1 example that satsifies GWNeverEating

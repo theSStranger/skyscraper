@@ -1,11 +1,6 @@
 #lang forge
 
-abstract sig Wall {}
-
-one sig Top extends Wall {}
-one sig Bot extends Wall {}
-one sig Lft extends Wall {}
-one sig Rgt extends Wall {}
+// open "common_definitions.frg"
 
 // Cell Sig, stores position and value
 sig Cell {
@@ -13,6 +8,14 @@ sig Cell {
   col : one Int,
   val : one Int
 }
+
+// Wall sig to specify location of puzzle constraint
+abstract sig Wall {}
+
+one sig Top extends Wall {}
+one sig Bot extends Wall {}
+one sig Lft extends Wall {}
+one sig Rgt extends Wall {}
 
 // Board Sig, stores cell positions and board size
 one sig Board {
@@ -28,15 +31,6 @@ sig Constraint {
   hint : one Int
 }
 
-// Board Setup:
-// Every row and col are unique
-// X number of rows/cols
-
-// Game rules:
-// each val is unique within row/col
-// "biggest seen yet" obeys constraint
-
-
 // Checks that an index is within the board's bounds
 pred withinBounds[n : Int] {
   n >= 0
@@ -45,7 +39,20 @@ pred withinBounds[n : Int] {
 
 // Sets up the game and the basic board rules 
 // (all constraints that are not specific to a single puzzle instance)
-pred boardSetup {
+pred boardSetup[s : Int] {
+  Board.size = s
+  
+  // constraints are valid
+  all c: Constraint | {
+    withinBounds[c.index]
+    c.hint > 0
+    c.hint <= Board.size
+  }
+
+  // cant have 2 constraints on the same slot
+  all disj c1, c2: Constraint | {
+    (c1.wall != c2.wall) or (c1.index !=  c2.index) 
+  }
 
   all c:Cell | {
     // If you go to that row/col you get the cell
@@ -122,25 +129,43 @@ pred obeysConstraint[const : one Constraint] {
 
 
 // here, fill in the board situation
-pred boardConstraints {
-  Board.size = 4
+pred puzzleConstraints {
+
   one c: Constraint | {
     c.wall = Top
-    c.index = 0
-    c.hint = 4
+    c.index = 3
+    c.hint = 2
   }
 
   one c: Constraint | {
     c.wall = Lft
-    c.index = 2
+    c.index = 1
     c.hint = 2
   }
+
+  // one c: Constraint | {
+  //   c.wall = Rgt
+  //   c.index = 1
+  //   c.hint = 3
+  // }
+
+  // one c: Constraint | {
+  //   c.wall = Bot
+  //   c.index = 2
+  //   c.hint = 3
+  // }
 }
 
-run {
-  boardConstraints
-  boardSetup
+pred satsConstraints {
   all c:Constraint | {
     obeysConstraint[c]
   }
-} for exactly 16 Cell, 2 Constraint
+}
+
+pred addConstraint[w:Wall, i:Int, h:Int] {
+  one c: Constraint | {
+    c.wall = w
+    c.index = i
+    c.hint = h
+  }
+}

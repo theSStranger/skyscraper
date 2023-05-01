@@ -8,33 +8,31 @@
 ;(set-option! 'coregranularity 1)
 ;(set-option! 'core_minimization 'rce) ; try 'hybrid if slow
 
-(require "skyscraper.rkt")
+(require "sp.rkt")
 (require racket/stream)
 
-(define (run-constraint ind hnt)
-     (run slnFind
-          #:preds[satsConstraints
-               (boardSetup 4)
-               (addConstraint Top ind hnt)]
-          #:scope[(Cell 16 16) (Constraint 1 1)])
-)
-
 (run slnFind
-     #:preds[satsConstraints
-             (boardSetup 4)
-             (addConstraint Top 1 1)]
-     #:scope[(Cell 16 16) (Constraint 1 1)])
+     #:preds[valid]
+     #:scope[])
 
 (define slnFind-gen (forge:make-model-generator (forge:get-result slnFind) 'next))
 
 (define a1 (slnFind-gen))
 
-(check-eq? (length (hash-ref (first (Sat-instances a1)) 'Cell))
-           16)
+(check-eq? (length (hash-ref (first (Sat-instances a1)) 'N))
+           1)
 
-(print (first (Sat-instances a1)))
+(print (hash-ref (first (Sat-instances a1)) 'n))
+
 ;need to now extract cell values and add constraints to check for no other sln, or maybe just keep hitting "next" until somehow its done
 
+(print (length (Sat-instances a1)))
+
+(define a2 (slnFind-gen))
+
+(print (length (Sat-instances a2)))
+
+(print (hash-ref (first (Sat-instances a2)) 'n))
 
 
 

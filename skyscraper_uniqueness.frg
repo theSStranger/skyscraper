@@ -17,8 +17,15 @@ one sig Bot extends Wall {}
 one sig Lft extends Wall {}
 one sig Rgt extends Wall {}
 
+abstract sig Board {}
+
 // Board Sig, stores cell positions and board size
-one sig Board {
+one sig Board1 extends Board {
+    position : pfunc Int -> Int -> Cell,
+    size : one Int
+}
+
+one sig Board2 extends Board {
     position : pfunc Int -> Int -> Cell,
     size : one Int
 }
@@ -34,19 +41,20 @@ sig Constraint {
 // Checks that an index is within the board's bounds
 pred withinBounds[n : Int] {
   n >= 0
-  n < Board.size
+  n < Board1.size
 }
 
 // Sets up the game and the basic board rules 
 // (all constraints that are not specific to a single puzzle instance)
-pred boardSetup[s : Int] {
-  Board.size = s
+pred boardSetup {
+  Board1.size = 6
+  Board2.size = 6
   
   // constraints are valid
   all c: Constraint | {
     withinBounds[c.index]
     c.hint > 0
-    c.hint <= Board.size
+    c.hint <= Board1.size
   }
 
   // cant have 2 constraints on the same slot
@@ -56,7 +64,9 @@ pred boardSetup[s : Int] {
 
   all c:Cell | {
     // If you go to that row/col you get the cell
-    Board.position[c.row][c.col] = c
+    (Board1.position[c.row][c.col] = c) or (Board2.position[c.row][c.col] = c)
+
+    
 
     // all cell values in [1, Board.size]
     c.val > 0
@@ -70,7 +80,8 @@ pred boardSetup[s : Int] {
   all i,j : Int | {
     // only valid cells present in Board.position
     (!withinBounds[i] or !withinBounds[j]) implies {
-      no Board.position[i][j]
+      no Board1.position[i][j]
+      no Board2.position[i][j]
     }
   }
 
@@ -172,7 +183,7 @@ pred satsConstraints {
 
 run {
   puzzleConstraints
-  boardSetup[5]
+  boardSetup
   satsConstraints
   // diagonal
-} for exactly 25 Cell
+} for exactly 36 Cell

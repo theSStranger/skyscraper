@@ -82,13 +82,13 @@
 
 (for* ([index (in-range 0 4)]
          [hint (in-range 1 5)]
-         [index2 (in-range index 4)]
+         [index2 (in-range 0 4)]
          [hint2 (in-range 1 5)]
-         [index3 (in-range index2 4)]
+         [index3 (in-range 0 4)]
          [hint3 (in-range 1 5)])
     (run-constraint index hint index2 hint2 index3 hint3))
 
-
+#|
 ;4 constraints:
 (define (run-constraint ind hnt ind2 hnt2 ind3 hnt3 ind4 hnt4)
      (run slnFind
@@ -119,5 +119,5 @@
          [index4 (in-range 0 4)]
          [hint4 (in-range 1 5)])
     (run-constraint index hint index2 hint2 index3 hint3 index4 hint4))
-
+|#
 ;(run-constraint 0 0)

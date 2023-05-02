@@ -28,7 +28,7 @@
 )
 
 (for* ([index (in-range 0 4)]
-         [hint (in-range 0 4)])
+         [hint (in-range 1 5)])
     (run-constraint index hint))
 
 ;(run-constraint 0 0)

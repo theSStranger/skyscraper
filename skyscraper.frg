@@ -1,4 +1,4 @@
-#lang forge
+#lang forge "Filip" "Skyscraper Final Proj"
 
 // open "common_definitions.frg"
 
@@ -51,7 +51,7 @@ pred boardSetup[s : Int] {
 
   // cant have 2 constraints on the same slot
   all disj c1, c2: Constraint | {
-    (c1.wall != c2.wall) or (c1.index !=  c2.index) 
+    (c1.wall != c2.wall) or (c1.index != c2.index) 
   }
 
   all c:Cell | {
@@ -127,34 +127,60 @@ pred obeysConstraint[const : one Constraint] {
     }} = const.hint
 }
 
+pred addConstraint[w:Wall, i:Int, h:Int] {
+  one c: Constraint | {
+    c.wall = w
+    c.index = i
+    c.hint = h
+  }
+}
 
 // here, fill in the board situation
 pred puzzleConstraints {
+// (addConstraint Top 0 4)
+//                (addConstraint Top 1 3)
+//                (addConstraint Top 2 2)
+//                (addConstraint Top 3 1)
+//                (addConstraint Bot 0 1)
+//                (addConstraint Bot 1 2)
+//                (addConstraint Bot 2 2)
+//                (addConstraint Bot 3 2)
+//                (addConstraint Lft 0 4)
+//                (addConstraint Lft 1 3)
+//                (addConstraint Lft 2 2)
+//                (addConstraint Lft 3 1)
+//                (addConstraint Rgt 0 1)
+//                (addConstraint Rgt 1 2)
+//                (addConstraint Rgt 2 2)
+//                (addConstraint Rgt 3 2)
+  addConstraint[Top, 0, 4]
+  addConstraint[Top, 1, 3]
+  addConstraint[Top, 2, 2]
+  addConstraint[Top, 3, 1]
 
-  one c: Constraint | {
-    c.wall = Top
-    c.index = 3
-    c.hint = 2
-  }
+  addConstraint[Bot, 0, 1]
+  addConstraint[Bot, 1, 2]
+  addConstraint[Bot, 2, 2]
+  addConstraint[Bot, 3, 2]
 
-  one c: Constraint | {
-    c.wall = Lft
-    c.index = 1
-    c.hint = 2
-  }
+// 1 2 3 4
+// 2 3 4 1
+// 3 4 1 2
+// 4 1 2 3
 
-  // one c: Constraint | {
-  //   c.wall = Rgt
-  //   c.index = 1
-  //   c.hint = 3
-  // }
+// REMOVE CONSTRAINT SIG, REPLACE IWTH JUST NUMS TO SEE IF THAT FIXES SYM ISSUE
 
-  // one c: Constraint | {
-  //   c.wall = Bot
-  //   c.index = 2
-  //   c.hint = 3
-  // }
+  addConstraint[Lft, 0, 4]
+  addConstraint[Lft, 1, 3]
+  addConstraint[Lft, 2, 2]
+  addConstraint[Lft, 3, 1]
+
+  // addConstraint[Rgt, 0, 1]
+  // addConstraint[Rgt, 1, 2]
+  // addConstraint[Rgt, 2, 2]
+  // addConstraint[Rgt, 3, 2]
 }
+
 
 pred satsConstraints {
   all c:Constraint | {
@@ -172,7 +198,7 @@ pred satsConstraints {
 
 run {
   puzzleConstraints
-  boardSetup[5]
+  boardSetup[4]
   satsConstraints
   // diagonal
-} for exactly 25 Cell
+} for exactly 16 Cell, 12 Constraint

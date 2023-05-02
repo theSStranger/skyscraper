@@ -13,25 +13,22 @@
 
 (define (run-constraint ind hnt)
      (run slnFind
-          #:preds[satsConstraints
+          #:preds[
                (boardSetup 4)
-               (addConstraint Top ind hnt)]
-          #:scope[(Cell 16 16) (Constraint 1 1)])
+               (obeysConstraint Top ind hnt)
+               ]
+          #:scope[(Cell 16 16)])
      (define slnFind-gen (forge:make-model-generator (forge:get-result slnFind) 'next))
 
      (define a1 (slnFind-gen))
+     (define a2 (slnFind-gen))
 
-     (check-eq? (length (hash-ref (first (Sat-instances a1)) 'Cell))
-           16)
-
-     (print (first (Sat-instances a1)))
-     (is-sat? slnFind)
+     (if (and (Sat? a1) (not (Sat? a2))) (print "SUCCESS") (print "f"))
+     (forge:close-run slnFind)
 )
 
+(for* ([index (in-range 0 4)]
+         [hint (in-range 0 4)])
+    (run-constraint index hint))
 
-;need to now extract cell values and add constraints to check for no other sln, or maybe just keep hitting "next" until somehow its done
-
-(run-constraint 1 1)
-
-
-; (stream-ref (forge:Run-result findSource) 0)
+;(run-constraint 0 0)

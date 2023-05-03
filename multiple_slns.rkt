@@ -76,17 +76,20 @@
      (define a1 (slnFind-gen))
      (define a2 (slnFind-gen))
 
-     (if (and (Sat? a1) (not (Sat? a2))) (print "SUCCESS") (print "f"))
+     (if (and (Sat? a1) (not (Sat? a2))) (printf "SUCCESS ~v ~v ~v ~v ~v ~v" ind hnt ind2 hnt2 ind3 hnt3) (print "f"))
      (forge:close-run slnFind)
 )
 
-(for* ([index (in-range 0 4)]
-         [hint (in-range 1 5)]
-         [index2 (in-range 0 4)]
-         [hint2 (in-range 1 5)]
-         [index3 (in-range 0 4)]
-         [hint3 (in-range 1 5)])
-    (run-constraint index hint index2 hint2 index3 hint3))
+(for* ([i (in-range 0 4)]
+             [j (in-range 0 4)]
+             [k (in-range 0 4)]
+             [h1 (in-range 1 5)]
+             [h2 (in-range 1 5)]
+             [h3 (in-range 1 5)])
+    (when (and (not (= i j)) (not (= j k)) (not (= i k))
+               (not (= (- 4 i) j)) (not (= (- 4 j) k)) (not (= (- 4 i) k)))
+      (run-constraint i h1 k h2 k h3)))
+
 
 #|
 ;4 constraints:

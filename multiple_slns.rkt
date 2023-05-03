@@ -80,6 +80,13 @@
      (forge:close-run slnFind)
 )
 
+(for* ([hint (in-range 1 5)]
+         [hint2 (in-range 1 5)]
+         [index3 (in-range 2 4)]
+         [hint3 (in-range 1 5)])
+    (run-constraint 0 hint 1 hint2 index3 hint3))
+
+#| 
 
 (for* ([index (in-range 0 4)]
          [hint (in-range 1 5)]
@@ -88,8 +95,6 @@
          [index3 (in-range index 4)]
          [hint3 (in-range 1 5)])
     (run-constraint index hint index2 hint2 index3 hint3))
-
-#| 
 
 
 ;4 constraints:

@@ -76,7 +76,7 @@
      (define a1 (slnFind-gen))
      (define a2 (slnFind-gen))
 
-     (if (and (Sat? a1) (not (Sat? a2))) (printf "SUCCESS ~v ~v ~v ~v ~v ~v" ind hnt ind2 hnt2 ind3 hnt3) (print "f"))
+     (if (and (Sat? a1) (not (Sat? a2))) (printf "SUCCESS ~v ~v ~v ~v ~v ~v " ind hnt ind2 hnt2 ind3 hnt3) (print "f"))
      (forge:close-run slnFind)
 )
 

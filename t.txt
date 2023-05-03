@@ -1,18 +1,60 @@
-((Board . ((Board0))) (Bot . ((Bot0))) (Cell . ((Cell0) (Cell1) (Cell2) (Cell3) (Cell4) (Cell5) (Cell6) (Cell7) (Cell8) (Cell9) (Cell10) (Cell11) (Cell12) (Cell13) (Cell14) (Cell15))) (Constraint . ((Constraint0))) (Lft . ((Lft0))) (Rgt . ((Rgt0))) (Top . ((Top0))) (Wall . ((Top0) (Bot0) (Lft0) (Rgt0))) (col . ((Cell0 3) (Cell1 3) (Cell2 3) (Cell3 3) (Cell4 2) (Cell5 2) (Cell6 2) (Cell7 2) (Cell8 1) (Cell9 1) (Cell10 1) (Cell11 1) (Cell12 0) (Cell13 0) (Cell14 0) (Cell15 0))) (hint . ((Constraint0 1))) (index . ((Constraint0 1))) (position . ((Board0 0 0 Cell15) (Board0 0 1 Cell11) (Board0 0 2 Cell7) (Board0 0 3 Cell3) (Board0 1 0 Cell14) (Board0 1 1 Cell10) (Board0 1 2 Cell6) (Board0 1 3 Cell2) (Board0 2 0 Cell13) (Board0 2 1 Cell9) (Board0 2 2 Cell5) (Board0 2 3 Cell1) (Board0 3 0 Cell12) (Board0 3 1 Cell8) (Board0 3 2 Cell4) (Board0 3 3 Cell0))) (row . ((Cell0 3) (Cell1 2) (Cell2 1) (Cell3 0) (Cell4 3) (Cell5 2) (Cell6 1) (Cell7 0) (Cell8 3) (Cell9 2) (Cell10 1) (Cell11 0) (Cell12 3) (Cell13 2) (Cell14 1) (Cell15 0))) (size . ((Board0 4))) (val . ((Cell0 4) (Cell1 1) (Cell2 2) (Cell3 3) (Cell4 2) (Cell5 3) (Cell6 4) (Cell7 1) (Cell8 3) (Cell9 2) (Cell10 1) (Cell11 4) (Cell12 1) (Cell13 4) (Cell14 3) (Cell15 2))) (wall . ((Constraint0 Top0))))#<procedure:newline>'#hash((Board . ((Board0))) (Bot . ((Bot0))) (Cell . ((Cell0) (Cell1) (Cell2) (Cell3) (Cell4) (Cell5) (Cell6) (Cell7) (Cell8) (Cell9) (Cell10) (Cell11) (Cell12) (Cell13) (Cell14) (Cell15))) (Constraint . ((Constraint0))) (Lft . ((Lft0))) (Rgt . ((Rgt0))) (Top . ((Top0))) (Wall . ((Top0) (Bot0) (Lft0) (Rgt0))) (col . ((Cell0 3) (Cell1 3) (Cell2 3) (Cell3 3) (Cell4 2) (Cell5 2) (Cell6 2) (Cell7 2) (Cell8 1) (Cell9 1) (Cell10 1) (Cell11 1) (Cell12 0) (Cell13 0) (Cell14 0) (Cell15 0))) (hint . ((Constraint0 1))) (index . ((Constraint0 1))) (position . ((Board0 0 0 Cell15) (Board0 0 1 Cell11) (Board0 0 2 Cell7) (Board0 0 3 Cell3) (Board0 1 0 Cell14) (Board0 1 1 Cell10) (Board0 1 2 Cell6) (Board0 1 3 Cell2) (Board0 2 0 Cell13) (Board0 2 1 Cell9) (Board0 2 2 Cell5) (Board0 2 3 Cell1) (Board0 3 0 Cell12) (Board0 3 1 Cell8) (Board0 3 2 Cell4) (Board0 3 3 Cell0))) (row . ((Cell0 3) (Cell1 2) (Cell2 1) (Cell3 0) (Cell4 3) (Cell5 2) (Cell6 1) (Cell7 0) (Cell8 3) (Cell9 2) (Cell10 1) (Cell11 0) (Cell12 3) (Cell13 2) (Cell14 1) (Cell15 0))) (size . ((Board0 4))) (val . ((Cell0 4) (Cell1 1) (Cell2 3) (Cell3 2) (Cell4 1) (Cell5 4) (Cell6 2) (Cell7 3) (Cell8 3) (Cell9 2) (Cell10 1) (Cell11 4) (Cell12 2) (Cell13 3) (Cell14 4) (Cell15 1))) (wall . ((Constraint0 Top0))))
+'(0 1 2)
+'(0 1 3)
+'(0 2 1)
+'(0 2 3)
+'(0 3 1)
+'(0 3 2)
+'(1 0 2)
+'(1 0 3)
+'(1 2 0)
+'(1 2 3)
+'(1 3 0)
+'(1 3 2)
+'(2 0 1)
+'(2 0 3)
+'(2 1 0)
+'(2 1 3)
+'(2 3 0)
+'(2 3 1)
+'(3 0 1)
+'(3 0 2)
+'(3 1 0)
+'(3 1 2)
+'(3 2 0)
+'(3 2 1)
 
 
+Write a Racket program that creates permutations of 3 numbers selected from [0, 1, 2, 3], but does not contain reversed copies of any combination. Example: if (3,0,1) is present, it should exclude (1,0,3). If (1, 2, 3) is present, it should exclude (3,2,1)
+GPT Responded:
+(define (permutations-no-reversed-copies lst)
+  (cond
+    [(null? lst) empty]
+    [(null? (cdr lst)) lst]
+    [else
+     (let ([head (car lst)]
+           [tail (cdr lst)])
+       (append (map (lambda (x) (cons head x))
+                    (permutations-no-reversed-copies tail))
+               (permutations-no-reversed-copies tail)))]))
 
-1 2 3 4
-2 3 4 1
-3 4 1 2
-4 1 2 3
+(permutations-no-reversed-copies '(0 1 2 3))
+;; Result: '((0 1 2) (0 1 3) (0 2 1) (0 2 3) (0 3 1) (0 3 2) (1 0 2) (1 0 3) (1 2 0) (1 2 3) (1 3 0) (1 3 2) (2 0 1) (2 0 3) (2 1 0) (2 1 3) (2 3 0) (2 3 1) (3 0 1) (3 0 2) (3 1 0) (3 1 2) (3 2 0) (3 2 1))
 
-4 3 2 1
+Modify the above code so it includes only one copy of every mirrored pair
+GPT Responded:
+of permutations.
 
+(define (permutations-no-reversed-copies lst)
+  (cond
+    [(null? lst) empty]
+    [(null? (cdr lst)) lst]
+    [else
+     (let ([head (car lst)]
+           [tail (cdr lst)])
+       (append (map (lambda (x) (cons head x))
+                    (filter (lambda (x) (not (equal? (reverse x) x)))
+                            (permutations-no-reversed-copies tail)))
+               (permutations-no-reversed-copies tail)))]))
 
-1 2 2 2
-
-
-4 3 2 1
-
-1 2 2 2
+(permutations-no-reversed-copies '(0 1 2 3))
+;; Result: '((0 1 2) (0 1 3) (0 2 1) (0 2 3) (0 3 1) (1 0 2) (1 0 3) (1 2 0) (1 2 3) (1 3 0) (2 0 1) (2 0 3) (2 1 0) (2 1 3) (2 3 0) (3 0 1) (3 0 2) (3 1 0) (3 1 2))

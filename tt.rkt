@@ -1,4 +1,15 @@
 #lang racket
 
-(printf "~v ~v ~v ~v ~v ~v" 1 0 2 3 3 3)
-(printf "~v ~v ~v ~v ~v ~v" 1 0 2 3 3 3)
+(define (permutations-no-reversed-copies lst)
+  (cond
+    [(null? lst) empty]
+    [(null? (cdr lst)) lst]
+    [else
+     (let ([head (car lst)]
+           [tail (cdr lst)])
+       (append (map (lambda (x) (cons head x))
+                    (filter (lambda (x) (not (equal? (reverse x) x)))
+                            (permutations-no-reversed-copies tail)))
+               (permutations-no-reversed-copies tail)))]))
+
+(print (permutations-no-reversed-copies '(0 1 2 3)))

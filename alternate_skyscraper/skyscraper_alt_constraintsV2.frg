@@ -1,11 +1,9 @@
 #lang forge "Filip" "Skyscraper Final Proj"
 
-// open "common_definitions.frg"
-
 // Cell Sig, stores position and value
 sig Cell {
-  row : one Int,
-  col : one Int,
+  cell_row : one Int,
+  cell_col : one Int,
   val : one Int
 }
 
@@ -36,15 +34,15 @@ pred boardSetup[s : Int] {
 
   all c:Cell | {
     // If you go to that row/col you get the cell
-    Board.position[c.row][c.col] = c
+    Board.position[c.cell_row][c.cell_col] = c
 
     // all cell values in [1, Board.size]
     c.val > 0
     c.val <= Board.size
     
     // All cells on board
-    withinBounds[c.row]
-    withinBounds[c.col]
+    withinBounds[c.cell_row]
+    withinBounds[c.cell_col]
   }
 
   all i,j : Int | {
@@ -66,70 +64,81 @@ pred boardSetup[s : Int] {
 
   all disj c1,c2 : Cell | {
     // all cells in different pos
-    (c1.row != c2.row) or (c1.col != c2.col)
+    (c1.cell_row != c2.cell_row) or (c1.cell_col != c2.cell_col)
   }
 }
 
-// Pred which determines if a given cell is visible from a given wall
-pred canBeSeen[c : Cell, w: Wall] {
+// Pred which determines if a given cell is visible from a given wall from a given index
+pred canBeSeen[c : Cell, w: Wall, i: Int] {
   // true when c is bigger than all cells before it
+
+  (w=Top) => {c.cell_row >= i}
+  (w=Bot) => {c.cell_row <= i}
+  (w=Lft) => {c.cell_col >= i}
+  (w=Rgt) => {c.cell_col <= i}
+
   all other:Int | {
     withinBounds[other] => {
       // looking down col
-      (w=Top and other < c.row) => {
-        (Board.position[other][c.col]).val < c.val
+      (w=Top and other < c.cell_row and other >=i) => {
+        (Board.position[other][c.cell_col]).val < c.val
       }
 
       // looking up col
-      (w=Bot and other > c.row) => {
-        (Board.position[other][c.col]).val < c.val
+      (w=Bot and other > c.cell_row and other <= i) => {
+        (Board.position[other][c.cell_col]).val < c.val
       }
 
       // looking towards left
-      (w=Rgt and other > c.col) => {
-        (Board.position[c.row][other]).val < c.val
+      (w=Rgt and other > c.cell_col and other <= i) => {
+        (Board.position[c.cell_row][other]).val < c.val
       }
 
       // looking towards right
-      (w=Lft and other < c.col) => {
-        (Board.position[c.row][other]).val < c.val
+      (w=Lft and other < c.cell_col and other >= i) => {
+        (Board.position[c.cell_row][other]).val < c.val
       }
     }
   }
 }
 
+// abstract sig Constraint {
+//   wall : one Wall,
+//   hint : one Int
+// }
+
+// // Constraint Sig, stores game constraint including which wall, which index on 
+// //that wall, and what the hint is
+// sig WallConstraint extends Constraint{
+//   index : one Int
+// }
+
+// sig InteriorConstraint extends Constraint {
+//   const_row : one Int,
+//   const_col : one Int
+// }
+
 // checks that a board constraint is sat
-pred obeysConstraint[wall:Wall, index:Int, hint:Int] {
+pred obeysWallConstraint[wl:Wall, ht:Int, ix:Int] {
   // # of cells which can be seen on that specific row/col obeys the hint
   #{c:Cell | { 
-    (wall = Top or wall = Bot) => {c.col = index} else {c.row = index}
-    canBeSeen[c, wall]
-    }} = hint
+    (wl = Top or wl = Bot) => {c.cell_col = ix} else {c.cell_row = ix}
+    canBeSeen[c, wl, 0]
+    }} = ht
+}
+
+// checks that an inner constraint is sat
+pred obeysInteriorConstraint[wl:Wall, ht:Int, icr:Int, icc:Int] {
+  // # of cells which can be seen on that specific row/col obeys the hint
+  #{c:Cell | { 
+    (wl = Top or wl = Bot) => {c.cell_col = icc and canBeSeen[c, wl, icr]} else {c.cell_row = icr and canBeSeen[c, wl, icc]}
+    }} = ht
 }
 
 // here, fill in the board situation
 pred puzzleConstraints {
-  obeysConstraint[Top, 0, 4]
-  obeysConstraint[Top, 1, 3]
-  obeysConstraint[Top, 2, 2]
-  obeysConstraint[Top, 3, 1]
-
-  obeysConstraint[Bot, 0, 1]
-  obeysConstraint[Bot, 1, 2]
-  obeysConstraint[Bot, 2, 2]
-  obeysConstraint[Bot, 3, 2]
-
-  obeysConstraint[Lft, 0, 4]
-  obeysConstraint[Lft, 1, 3]
-  obeysConstraint[Lft, 2, 2]
-  obeysConstraint[Lft, 3, 1]
-
-  obeysConstraint[Rgt, 0, 1]
-  obeysConstraint[Rgt, 1, 2]
-  obeysConstraint[Rgt, 2, 2]
-  obeysConstraint[Rgt, 3, 2]
+  obeysWallConstraint[Top, 1, 1]
 }
-
 
 run {
   puzzleConstraints

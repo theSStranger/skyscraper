@@ -17,7 +17,10 @@
      (run slnFind
           #:preds[
                (boardSetup 4)
-               (obeysWallConstraint Top 1 1)
+               (obeysInteriorConstraint Top h1 rw cl)
+               (obeysInteriorConstraint Bot h2 rw cl)
+               (obeysInteriorConstraint Lft h3 rw cl)
+               (obeysInteriorConstraint Rgt h4 rw cl)
                ]
           #:scope[(Cell 16 16)])
      (define slnFind-gen (forge:make-model-generator (forge:get-result slnFind) 'next))
@@ -25,18 +28,16 @@
      (define a1 (slnFind-gen))
      (define a2 (slnFind-gen))
 
-     (if (and (Sat? a1) (not (Sat? a2))) (print "SUCCESS") (print "f"))
+     (if (and (Sat? a1) (not (Sat? a2))) (print "SUCCESS ~v ~v ~v ~v ~v ~v" rw cl h1 h2 h3 h4) (print "f"))
      (forge:close-run slnFind)
 )
 
-#|
-(for* ([r (in-range 0 3)]
-          [c (in-range 0 4)]
+(for* ([r (in-range 0 2)]
+          [c (in-range 0 2)]
          [h1 (in-range 1 5)]
-         [h2 (in-range 1 5)]
+         [h2 (in-range h1 5)]
          [h3 (in-range 1 5)]
-         [h4 (in-range 1 5)])
+         [h4 (in-range h3 5)])
     (run-constraint r c h1 h2 h3 h4))
-    |#
 
-(run-constraint 1 1 1 1 1 1)
+;(run-constraint 1 1 1 1 1 1)

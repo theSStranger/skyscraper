@@ -31,30 +31,7 @@ class Skyscrapers(object):
         # Grid Variables
         self.L = {(i, j): Int('var_{}_{}'.format(i, j)) for i in range(N) for j in range(N)}
 
-        # EDIT HERE: If you need to initialize anything that should be shared across `solve` and `check_multiple`
-        # feel free to add it here
-
-        
-
     def skyscraper_counter(self, cells, clue):
-        # max_seen = Int('max_seen')
-        # self.s.add(max_seen == -1)
-        # count = Int('count')
-        # self.s.add(count == 0)
-
-        # for i in range(self.N):
-        #     num = cells[i]
-        #     new_max_seen = Int('new_max_seen_{}'.format(i))
-        #     new_count = Int('new_count_{}'.format(i))
-
-        #     self.s.add(If(num > max_seen, new_max_seen == num, new_max_seen == max_seen))
-        #     self.s.add(If(num > max_seen, new_count == count + 1, new_count == count))
-
-        #     max_seen = new_max_seen
-        #     count = new_count
-
-        # self.s.add(count == clue)
-
         # Return maximum of a vector; error if empty, stolen from https://stackoverflow.com/questions/67043494/max-and-min-of-a-set-of-variables-in-z3py
         def max(vs):
             m = vs[0]
@@ -62,10 +39,7 @@ class Skyscrapers(object):
                 m = If(v > m, v, m)
             return m
 
-        # there should be X number of cells that have only smaller cells in front of it
-
-        print([(cells[i] >= max(cells[:i])) for i in range(self.N) if i>0])
-        
+        # there should be X number of cells that have only smaller cells in front of it        
         self.s.add(Sum([If(cells[i] > max(cells[:i]), 1, 0) for i in range(self.N) if i>0]) == clue-1)
 
         # Sum([If(cells[i] > max(cells[:i]), 1, 0) for i in range(self.N) if i>0]) == clue-1 : a breakdown
@@ -78,13 +52,6 @@ class Skyscrapers(object):
         
         
     def solve(self):
-        """PART 1"""
-
-        # EDIT HERE: PART 1 CONSTRAINTS
-        # Here, `self.N` is the size of the board, and `self.game_data` is the game data
-        # Feel free to use `self.s.push()` and `self.s.pop()` across `solve` and `check_multiple`
-        # to reset constraints if you don't want to reuse them in `check_multiple`
-
         # Each cell has a value between 1 and N (inclusive)
         for var in self.L.values():
             self.s.add(1 <= var, var <= self.N)
@@ -98,8 +65,8 @@ class Skyscrapers(object):
             self.s.add(Distinct([self.L[i, j] for i in range(self.N)]))
 
         # Outside constrains
-        for cage in self.game_data:
-            wall, index, clue = cage["wall"], cage["index"], cage['clue']
+        for const in self.game_data:
+            wall, index, clue = const["wall"], const["index"], const['clue']
 
             if wall % 2 == 0:
                 cells = [self.L[(x, index)] for x in range(self.N)]
@@ -114,7 +81,6 @@ class Skyscrapers(object):
                 else:
                     self.skyscraper_counter(cells[::-1], clue)
 
-        # Check for PART 1
         result = self.s.check()
         if result == sat:
             return get_grid(self.N, self.L, self.s.model())
@@ -122,35 +88,12 @@ class Skyscrapers(object):
             return None
 
 
-    def check_multiple(self, ans):
-        """PART 2"""
-
-        # EDIT HERE: PART 2 CONSTRAINTS
-        # Here, `self.N` is the size of the board, and `self.game_data` is the game data
-        # Feel free to use `self.s.push()` and `self.s.pop()` across `solve` and `check_multiple`
-        # to reset constraints if you don't want to reuse them in `check_multiple`
-        # if ans is None:
-        #     return False
-
-        # different_cell_constraints = []
-        # for i in range(self.N):
-        #     for j in range(self.N):
-        #         different_cell_constraints.append(self.L[i, j] != ans[i][j])
-
-        # self.s.push()
-        # self.s.add(Or(different_cell_constraints))
-        # result = self.s.check()
-        # self.s.pop()
-        # return result == sat # Return True or False
-
 if __name__ == "__main__":
     game_data_example = [
         dict(wall=0, index=1, clue=4),
         dict(wall=1, index=2, clue=3),
         dict(wall=2, index=3, clue=3),
     ]
-
-    # skyscraper = Skyscrapers(4, game_data_example)
     
     '''
       -  -  3  -
@@ -172,24 +115,11 @@ if __name__ == "__main__":
         dict(wall=0, index=2, clue=3),
         dict(wall=0, index=3, clue=1)
     ]
-# 0 2 1 3 2 4
-# 0 1 1 3 2 4
-# 02142331
+
     skyscraper = Skyscrapers(4, game_data_hard)
 
-
-    # PART 1
     ans = skyscraper.solve()
     
     print_grid(ans)
 
     print(', '.join([str(ans[i][j]) for i in range(4) for j in range(4)]))
-
-    # unique3Constraint: {boardSetup[4] and excludeBoard[3, 2, 1, 4, 4, 3, 2, 1, 1, 4, 3, 2, 2, 1, 4, 3] and addConstraint[Top, 0, 2] and addConstraint[Top, 1, 3] and addConstraint[Top, 2, 4] and satsConstraints} for exactly 16 Cell is unsat
-
-    # "unique3Constraint"+"".join([str(i) for i in constraints])+": \{boardSetup[4] and addConstraint[Top,"+str(constrin)
-
-
-    # Please write python code which reads lines from a file, then extracts the six numbers after "SUCCESS". Here is an example of a line:
-    # SUCCESS 0 2 1 3 2 4 #vars: (size-variables 604831); #primary: (size-primary 4880); #clauses: (size-clauses 633437)
- 

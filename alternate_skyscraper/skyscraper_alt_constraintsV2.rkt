@@ -115,11 +115,6 @@ pred obeysWallConstraint[wl:Wall, ht:Int, ix:Int] {
 pred obeysInteriorConstraint[wl:Wall, ht:Int, icr:Int, icc:Int] {
   // # of cells which can be seen on that specific row/col obeys the hint
   #{c:Cell | { 
-    (wl = Top or wl = Bot) => {c.cell_col = icc and canBeSeen[c, wl, icr]} else {c.cell_row = icr and canBeSeen[c, wl, icc]}
-    }} = ht
-}
-
-// here, fill in the board situation
-pred puzzleConstraints {
-  obeysWallConstraint[Top, 1, 1]
+    (wl = Top or wl = Bot) => {c.cell_col = sum[icc] and canBeSeen[c, wl, sum[icr]]} else {c.cell_row = sum[icr] and canBeSeen[c, wl, sum[icc]]}
+    }} = sum[ht]
 }

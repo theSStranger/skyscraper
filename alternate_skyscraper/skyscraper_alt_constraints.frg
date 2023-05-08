@@ -180,9 +180,16 @@ pred puzzleConstraints {
 
   one c:InteriorConstraint | {
     c.wall = Rgt
-    c.const_row = 3
-    c.const_col = 1
-    c.hint = 1
+    c.const_row = 2
+    c.const_col = 2
+    c.hint = 2
+  }
+
+  one c:InteriorConstraint | {
+    c.wall = Bot
+    c.const_row = 2
+    c.const_col = 3
+    c.hint = 2
   }
 }
 
@@ -201,4 +208,4 @@ run {
   puzzleConstraints
   boardSetup[4]
   satsConstraints
-} for exactly 16 Cell, 2 Constraint
+} for exactly 16 Cell, 3 Constraint

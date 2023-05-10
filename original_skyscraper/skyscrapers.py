@@ -51,7 +51,13 @@ class Skyscrapers(object):
 
         
         
-    def solve(self):
+    def solve(self, not_board=None):
+        if not_board != None:
+        
+            for i,row in enumerate(ans):
+                for j,v in enumerate(row):
+                    l.append()
+
         # Each cell has a value between 1 and N (inclusive)
         for var in self.L.values():
             self.s.add(1 <= var, var <= self.N)
@@ -86,6 +92,16 @@ class Skyscrapers(object):
             return get_grid(self.N, self.L, self.s.model())
         else:
             return None
+    
+    def check_unique(self):
+        ans = self.solve()
+        self.s.add(Or([ans[i][j] != self.L[(i,j)] for i in range(self.N) for j in range(self.N)]))
+        result = self.s.check()
+        if result==sat:
+            return get_grid(self.N, self.L, self.s.model())
+        else:
+            return None
+        
 
 
 if __name__ == "__main__":
@@ -123,3 +139,22 @@ if __name__ == "__main__":
     print_grid(ans)
 
     print(', '.join([str(ans[i][j]) for i in range(4) for j in range(4)]))
+
+
+    with open('./unique_boards/unique_three_constraint_one_side_boards.txt', 'r') as f:
+        for line in f:
+            if "SUCCESS" in line:
+                numbers = [int(i) for i in line[line.find("SUCCESS ")+8:line.find("SUCCESS")+20].split()]
+                game_data = [
+                    dict(wall=0, index=numbers[0], clue=numbers[1]),
+                    dict(wall=0, index=numbers[2], clue=numbers[3]),
+                    dict(wall=0, index=numbers[4], clue=numbers[5]),
+                ]
+                skyscraper = Skyscrapers(4, game_data)
+                print(numbers)
+                print(skyscraper.check_unique())
+                
+                
+
+
+

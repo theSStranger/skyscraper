@@ -6,6 +6,22 @@ We were most curious about the relationship between skyscraper puzzle constraint
 In the end, the model could accurately find solutions to a given set of constraints in both versions of Skyscraper. Moreover, it was used to identify boards with unique solutions with various hint arrangements. Finally, the model also demonstrated usability to identify "isometric" boards - given a Skyscraper board with only exterior constraints, it can identify AltSkyscraper boards (with only interior constraints) where a solution in the original board will always be a solution in the AltSkyscraper board.
 #
 
+## TLDR
+
+Initially, we modelled the puzzle with both Constraints and Cells as sigs. This was cool because it allowed us to use our model in both directions: we could specify constraints and ask the model to give solutions (if any), or we could specify a board arrangement and ask the model for relevant constraints (ex: constraints with a solution that has '4's accross the main diagonal).
+
+When searching for unique solutions, the Constraint sig made it really hard for Forge to differentiate between identical solutions, so the sig was scrapped and constraints were prescribed just by their parameters. This allowed for our model to effectively discove puzzle boards of various kinds which have [unique solutions](#uniqueness), which was one of our target/reach goals. 
+
+We also wanted to experiment with our own version of Skyscraper (AltSkyscraper) that had interior constraints. This worked well - we made some cool observations about the [relationship between Skyscraper puzzles and AltSkyscraper](#isomorphism).
+
+In all these findings, there were huge limitations with regards to scale. We could not run our model with boards >6x6 cells (we stuck with 4x4 - big enough to be interesting but small enough to work). 
+
+Moreover, uniqueness is a higher-order predicate which we initially thought might be infeasible: we had to use Forge as a Racket library to exhaustively search for boards with unique solutions which was very costly. Despite this initial thought, and thanks to some math/symmetries in the puzzle, the search space could be greatly decreased to make this search more feasible. This constraint was even more prevelent when reasoning about AltSkyscraper, where each cell can have up to 4 constraints, so we were not able to reach strong conclusions about AltSkyscraper. 
+
+Our results, are also limited to only holding for 4x4 boards. We cannot conclude anything about other sizes (although in theory we could run the same tests with other sized boards). 
+
+Interpreting an instance of our model which solves a particular (provided) puzzle can be seen [here](#playing-with-our-model).
+
 ## What can you do?
 A user can specify a set of puzzle constraints and determine if a solution exists as well as find all distinct solutions.
 
@@ -111,14 +127,13 @@ In total, for boards with only 3 constraints on a single side, 192 were found to
 Interestingly, in the limited testing of isomorphism between Skyscraper and Altskyscraper hints, the model seemed to suggest that the interior constraints of a solution are constant. That is, if you take any Skyscraper puzzle, then every solution to that puzzle will have identical "interior constraints". Below is a visual guide with added explanation:
 
 #
-<img src="images/boardwithoutinner.png"  width="20%">
-<img src="images/boardwithinner.png"  width="20%"> 
+<img src="images/boardwithoutinner.png"  width="20%"> <img src="images/boardwithinner.png"  width="20%"> 
 
 Example of board isomorphism. The left board is a Skyscraper board with multiple solutions (one shown). The right board depicts the same solution annotated with every applicable AltSkyscraper hint. The model seemed to find that __all__ solutions to the left board must satisfy __all__ the AltSkyscraper hints on the right. That is, it is impossible to solve the left board without satisfying every individual inner constraint of the right board. 
 
 #
 
-Essentially, it is impossible to satisfy all the exterior constraints without also satisfying each individual interior constraint. This is an interesting finding since it means that the representation of a Skyscraper game might be fully explicable using only AltSkyscraper constraints. It seems to suggest that the edge constraints of a Skyscraper Puzzle completely determine the corresponding interior constraints of an AltSkyscraper puzzle. 
+Essentially, it is impossible to satisfy all the exterior constraints without also satisfying each individual interior constraint. This is an interesting finding since it means that the representation of a Skyscraper game might be fully explicable using only AltSkyscraper constraints. The model seems to suggest that the edge constraints of a Skyscraper Puzzle completely determine the corresponding interior constraints of an AltSkyscraper puzzle. 
 
 All of these results for both uniqueness and isomorphism were for 4x4 boards. There may be (and likely are) different findings for other board dimensions.
 
@@ -139,14 +154,32 @@ A run statement for using the model might look like the following:
       satsConstraints
     } for exactly 16 Cell, 3 Constraint
 
-Running this will solve the prescribed puzzle. The graph vizualizer is quite confusing as there are many fields and Cell names rarely match up with their position on the board, so you can use our viz script to nicely format the resulting solution:
+Running this will solve the prescribed puzzle. The Sterling graph vizualizer is quite confusing as there are many fields and Cell names rarely match up with their position on the board, so you can use our viz script to nicely format the resulting solution:
 
 <img src="images/sterlinggraph.png">
 
 ###### Sterling graph output
 <br>
-<img src="images/boardwithoutinner.png"  width="30%">
+<img src="images/boardwithoutinner.png"  width="40%">
 
 ###### Our vizualizer
 <br>
 You can click "next" in Sterling and rerun the vizualizer to find alternate solutions (if any).
+
+To find constraints for a specific board layout, you can do something similar (ex: constraints having 4s in the main diagonal):
+
+    pred diagonal {
+      all i:Int | {
+        withinBounds[i] => {
+          (Board.position[i][i]).val = 4
+        }
+      }
+    }
+
+    run {
+      diagonal
+      boardSetup[4]
+      satsConstraints
+    } for exactly 16 Cell, 3 Constraint
+
+<img src="images/diagonal.png"  width="40%">

@@ -244,16 +244,17 @@ pred satsConstraints {
   }
 }
 
-// pred diagonal {
-//   all i:Int | {
-//     withinBounds[i] => {
-//       (Board.position[i][i]).val = 4
-//     }
-//   }
-// }
+pred diagonal {
+  all i:Int | {
+    withinBounds[i] => {
+      (Board.position[i][i]).val = 4
+    }
+  }
+}
 
 run {
-  puzzleConstraints
+  // puzzleConstraints
+  diagonal
   boardSetup[4]
   satsConstraints
 } for exactly 16 Cell, 3 Constraint

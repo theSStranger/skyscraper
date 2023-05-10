@@ -256,5 +256,4 @@ run {
   puzzleConstraints
   boardSetup[4]
   satsConstraints
-  // diagonal
 } for exactly 16 Cell, 3 Constraint

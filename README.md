@@ -60,7 +60,7 @@ AltSkyscraper, a new puzzle we experimented with, had Skyscraper-like constraint
     - const_row : one Int
     - const_col : one Int
 
-With the above setup, the "Wall" field of each constraint determines which edge of the board the hint is "looking from". That is, a constraint along the top edge on the first column would have wall=Top and index=0. For interior constraints, the constraint would be applied following the same direction logic except the constraint would be applied starting at the indicated row/col position _including_ that cell.
+With the above setup, the "Wall" field of each constraint determines which edge of the board the hint is "looking from". That is, a constraint along the top edge on the first column would have wall=Top and index=0. For interior constraints, the constraint is be applied following the same direction logic except the constraint would be applied starting at the indicated row/col position _including_ that cell.
 
 ### Predicates:
 
@@ -92,36 +92,61 @@ The most important predicates for the model(s) are:
 
 ## Some Results
 
+### Uniqueness
 The model was able to find boards with 3 and 4 single-sided constraints that had strictly unique solutions. It also ruled out that boards with only 1 or 2 constraints (regardless or relative position) never have a unique solution in original Skyscraper. Regrettably, there was not enough time to consider other more complicated constraint arrangements (ex: multisided 3 constraints and beyond).
 
 #
 
 <img src="images/3c1.png"  width="10%"> <img src="images/3c4.png"  width="10%"> <img src="images/3c5.png"  width="10%"> <img src="images/3c6.png"  width="10%"> <img src="images/3c7.png"  width="10%"> <img src="images/3c8.png"  width="10%">
 
-##### Examples of 3 constraint single-sided boards with unique solutions.
+##### Examples of some of the "basic" 3 constraint single-sided boards with unique solutions.
 #
 
 In total, for boards with only 3 constraints on a single side, 192 were found to have a unique solution. The model searched only the  "bases" of all such boards: any 3 constraint single-sided board can be rotated/flipped to one of 128 "basic" forms, and out of those forms the model found 24 which had unique solutions. Each of these "basic" unique solutions can itself be flipped and rotated to make another unique solution board - thus the final count is 24 * 2 * 4 = 192 (2 from flipping horizontally, 4 from rotating).
 
 
-
-Interestingly, in the limited testing of isomorphism between Skyscraper and Altskyscraper hints, the model seemed to suggest that the interior constraints of a solution are constant. That is, if you take any Skyscraper puzzle, then every solution to that puzzle will have identical "interior constraints". Below is a visual representation of what that means:
-
-TODOTODOTODO example: given skyscraper board w mult solution, then show all interior constraints, then show other solutions to the board whcih also satisfy those constraints. 
-
-Essentially, it is impossible to satisfy all the exterior constraints without also satisfying each individual interior constraint. This is an interesting finding since it means that the representation of a Skyscraper game might be fully explicable using only AltSkyscraper constraints.
-
-All of these results were for 4x4 boards. There may be different findings for other board dimensions.
+### Isomorphism
 
 
+Interestingly, in the limited testing of isomorphism between Skyscraper and Altskyscraper hints, the model seemed to suggest that the interior constraints of a solution are constant. That is, if you take any Skyscraper puzzle, then every solution to that puzzle will have identical "interior constraints". Below is a visual guide with added explanation:
 
-instance -> you can use our setup to input your own constraints, use the viz script to view the board and hints, can click next to find other valid solutions if any
+#
+<img src="images/boardwithoutinner.png"  width="20%">
+<img src="images/boardwithinner.png"  width="20%"> 
 
+Example of board isomorphism. The left board is a Skyscraper board with multiple solutions (one shown). The right board depicts the same solution annotated with every applicable AltSkyscraper hint. The model seemed to find that __all__ solutions to the left board must satisfy __all__ the AltSkyscraper hints on the right. That is, it is impossible to solve the left board without satisfying every individual inner constraint of the right board. 
 
+#
 
-You should write a one page README describing how you structured your model and what your model proved. You can assume that anyone reading it will be familiar with your project proposal. Here are some examples of points you might cover:
+Essentially, it is impossible to satisfy all the exterior constraints without also satisfying each individual interior constraint. This is an interesting finding since it means that the representation of a Skyscraper game might be fully explicable using only AltSkyscraper constraints. It seems to suggest that the edge constraints of a Skyscraper Puzzle completely determine the corresponding interior constraints of an AltSkyscraper puzzle. 
 
-What tradeoffs did you make in choosing your representation? What else did you try that didn’t work as well?
-What assumptions did you make about scope? What are the limits of your model?
-Did your goals change at all from your proposal? Did you realize anything you planned was unrealistic, or that anything you thought was unrealistic was doable?
-How should we understand an instance of your model and what your custom visualization shows?
+All of these results for both uniqueness and isomorphism were for 4x4 boards. There may be (and likely are) different findings for other board dimensions.
+
+## Playing with our Model
+
+A run statement for using the model might look like the following:
+
+    
+    pred puzzleConstraints {
+      addConstraint[Top, 1, 3]
+      addConstraint[Lft, 3, 1]
+      addConstraint[Bot, 0, 1]
+    }
+
+    run {
+      puzzleConstraints
+      boardSetup[4]
+      satsConstraints
+    } for exactly 16 Cell, 3 Constraint
+
+Running this will solve the prescribed puzzle. The graph vizualizer is quite confusing as there are many fields and Cell names rarely match up with their position on the board, so you can use our viz script to nicely format the resulting solution:
+
+<img src="images/sterlinggraph.png">
+
+###### Sterling graph output
+<br>
+<img src="images/boardwithoutinner.png"  width="30%">
+
+###### Our vizualizer
+<br>
+You can click "next" in Sterling and rerun the vizualizer to find alternate solutions (if any).

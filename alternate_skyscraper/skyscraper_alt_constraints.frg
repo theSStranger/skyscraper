@@ -176,26 +176,23 @@ pred addConstraint[w:Wall, i:Int, h:Int] {
 
 // here, fill in the board situation
 pred puzzleConstraints {
-  one c:InteriorConstraint | {
-    c.wall = Top
-    c.const_row = 1
-    c.const_col = 1
-    c.hint = 2
-  }
+  // one c:WallConstraint | {
+  //   c.wall = Top
+  //   c.hint = 3
+  //   c.index = 1
+  // }
 
-  one c:InteriorConstraint | {
-    c.wall = Rgt
-    c.const_row = 2
-    c.const_col = 2
-    c.hint = 2
-  }
+  // one c:WallConstraint | {
+  //   c.wall = Lft
+  //   c.hint = 1
+  //   c.index = 3
+  // }
 
-  one c:InteriorConstraint | {
-    c.wall = Bot
-    c.const_row = 2
-    c.const_col = 3
-    c.hint = 2
-  }
+  // one c:WallConstraint | {
+  //   c.wall = Bot
+  //   c.hint = 1
+  //   c.index = 0
+  // }
 }
 
 
@@ -218,9 +215,10 @@ pred diagonal {
 }
 
 run {
-  // puzzleConstraints
+  puzzleConstraints
   boardSetup[4]
   satsConstraints
-  diagonal
-  #{w:InteriorConstraint | 1=1} = 3
-} for exactly 16 Cell, 3 InteriorConstraint, 0 WallConstraint
+  // diagonal
+  #{w:WallConstraint | 1=1} = 3
+  
+} for exactly 16 Cell, 3 WallConstraint

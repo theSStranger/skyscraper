@@ -137,7 +137,6 @@ pred obeysInteriorConstraint[wl:Wall, ht:Int, icr:Int, icc:Int] {
 
 // here, fill in the board situation
 pred puzzleConstraints {
-  obeysWallConstraint[Top, 1, 1]
 }
 
 run {

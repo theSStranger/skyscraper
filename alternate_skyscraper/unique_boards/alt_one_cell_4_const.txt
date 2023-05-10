@@ -1,3 +1,5 @@
+Output from find_unique_boards.rkt which was trying to find boards consisting of 1 cell with 4 interior constraints that have unique solutions. None were found.
+
 Forge version: 2.7.0
 To report issues with Forge, please visit https://report.forge-fm.org
 #vars: (size-variables 605432); #primary: (size-primary 4880); #clauses: (size-clauses 895915)

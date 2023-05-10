@@ -2,8 +2,6 @@
 
 open "skyscraper.frg"
 
-// open "common_definitions.frg"
-
 // True if two cells in same row/col have same val
 pred duplicateCells {
   some a:Int | {
@@ -54,6 +52,7 @@ test suite for satsConstraints {
   }
 }
 
+// tests to see that our modelling of the constraint mechanic is correct
 test suite for canBeSeen {
   test expect {
     // If we dont force sat constraint, then we can have an incorrect board
@@ -83,7 +82,7 @@ test suite for canBeSeen {
     size = `Board -> 4
   }
 
-  // verify all cells can/cant be seen from certain psns, bidirectionally
+  // verify all cells can/cant be seen from certain psns, bidirectionally in row
   example checkRow2 is (canBeSeen[`Cell0, `Lft] and not canBeSeen[`Cell0, `Rgt] and canBeSeen[`Cell1, `Lft] and canBeSeen[`Cell1, `Rgt] and not canBeSeen[`Cell2, `Lft] and canBeSeen[`Cell2, `Rgt]and not canBeSeen[`Cell3, `Lft] and canBeSeen[`Cell3, `Rgt]) for {
     Lft = `Lft
     Rgt = `Rgt
@@ -100,29 +99,20 @@ test suite for canBeSeen {
     size = `Board -> 4
   }
 
+  // verify all cells can/cant be seen from certain psns, bidirectionally in col
+  example checkCol is (canBeSeen[`Cell0, `Top] and not canBeSeen[`Cell0, `Bot] and canBeSeen[`Cell1, `Top] and canBeSeen[`Cell1, `Bot] and not canBeSeen[`Cell2, `Top] and canBeSeen[`Cell2, `Bot]and not canBeSeen[`Cell3, `Top] and canBeSeen[`Cell3, `Bot]) for {
+    Lft = `Lft
+    Rgt = `Rgt
+    Top = `Top
+    Bot = `Bot
+    Wall = Lft + Top + Rgt + Bot
+    Cell = `Cell0 + `Cell1 + `Cell2 + `Cell3
+    Board = `Board
+    // single col board for simplicity: 3 4 2 1
+    col = `Cell0 -> 0 + `Cell1 -> 0 + `Cell2 -> 0 + `Cell3 -> 0
+    row = `Cell0 -> 0 + `Cell1 -> 1 + `Cell2 -> 2 + `Cell3 -> 3
+    val = `Cell0 -> 3 + `Cell1 -> 4 + `Cell2 -> 2 + `Cell3 -> 1
+    position = `Board -> (0 -> (0->`Cell0) + 1->(0->`Cell1) + 2->(0->`Cell2) + 3->(0->`Cell3))
+    size = `Board -> 4
+  }
 }
-// test suite for GWNeverEating {
-  
-//     // TODO: Write 1 example that satsifies GWNeverEating
-//     example neverEating is GWNeverEating for {
-//         GWState = `S0 -- a trace with one state for simplicity
-//         Goat = `G0 + `G1 + `G2
-//         Wolf = `W0 + `W1 + `W2
-//         GWAnimal = Goat + Wolf
-//         -- constrain <gwshore> and <gwboat>
-//         Near = `Near
-//         Far = `Far
-//         Position = Near + Far
-//         gwshore = `S0 -> (`G0-> `Near +
-//                         `G1-> `Near +
-//                         `G2-> `Far +
-//                         `W0-> `Far +
-//                         `W1-> `Near +
-//                         `W2-> `Near)
-//         gwboat =`S0 -> `Near
-//     }
-// }
-
-// test expect {
-//     vacuity3: {StopAndCopyUnfragmentedWithAssumptions} for 9 Memory, 8 HeapCell, 5 Int is sat
-// }

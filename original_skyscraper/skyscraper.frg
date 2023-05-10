@@ -1,4 +1,4 @@
-#lang forge "Filip" "Skyscraper Final Proj"
+#lang forge
 
 // Cell Sig, stores position and value
 sig Cell {
@@ -125,11 +125,7 @@ pred obeysConstraint[const : one Constraint] {
     }} = const.hint
 }
 
-// verify board correctness
-// verify individual components (row/col)
-// find sln for constraints that doesnt 
-// solver that gives wrong solution - check that its unsat
-
+// predicate to add a specific constraint if desired
 pred addConstraint[w:Wall, i:Int, h:Int] {
   one c: Constraint | {
     c.wall = w
@@ -140,110 +136,19 @@ pred addConstraint[w:Wall, i:Int, h:Int] {
 
 // here, fill in the board situation
 pred puzzleConstraints {
-  // addConstraint[Top, 0, 1]
-  // addConstraint[Top, 1, 3]
-  // addConstraint[Top, 2, 4]
-
-  // addConstraint[Top, 0, 1]
-  // addConstraint[Top, 1, 3]
-  // addConstraint[Top, 3, 4]
-
-  // addConstraint[Top, 0, 1]
-  // addConstraint[Top, 1, 4]
-  // addConstraint[Top, 2, 3]
-
-  // addConstraint[Top, 0, 1]
-  // addConstraint[Top, 1, 4]
-  // addConstraint[Top, 3, 3]
-
-  // addConstraint[Top, 0, 2]
-  // addConstraint[Top, 1, 3]
-  // addConstraint[Top, 2, 4]
-
-  // addConstraint[Top, 0, 2]
-  // addConstraint[Top, 1, 3]
-  // addConstraint[Top, 3, 4]
-
   addConstraint[Top, 0, 2]
   addConstraint[Top, 1, 4]
   addConstraint[Top, 2, 3]
-
-  // addConstraint[Top, 0, 2]
-  // addConstraint[Top, 1, 4]
-  // addConstraint[Top, 3, 3]
-
-  // addConstraint[Top, 0, 3]
-  // addConstraint[Top, 1, 1]
-  // addConstraint[Top, 2, 4]
-
-  // addConstraint[Top, 0, 3]
-  // addConstraint[Top, 1, 1]
-  // addConstraint[Top, 3, 4]
-
-  // addConstraint[Top, 0, 3]
-  // addConstraint[Top, 1, 2]
-  // addConstraint[Top, 2, 4]
-
-  // addConstraint[Top, 0, 3]
-  // addConstraint[Top, 1, 2]
-  // addConstraint[Top, 3, 4]
-
-  // addConstraint[Top, 0, 3]
-  // addConstraint[Top, 1, 4]
-  // addConstraint[Top, 2, 1]
-
-  // addConstraint[Top, 0, 3]
-  // addConstraint[Top, 1, 4]
-  // addConstraint[Top, 2, 2]
-
-  // addConstraint[Top, 0, 3]
-  // addConstraint[Top, 1, 4]
-  // addConstraint[Top, 3, 1]
-
-  // addConstraint[Top, 0, 3]
-  // addConstraint[Top, 1, 4]
-  // addConstraint[Top, 3, 2]
-
-  // addConstraint[Top, 0, 4]
-  // addConstraint[Top, 1, 1]
-  // addConstraint[Top, 2, 3]
-
-  // addConstraint[Top, 0, 4]
-  // addConstraint[Top, 1, 1]
-  // addConstraint[Top, 3, 3]
-
-  // addConstraint[Top, 0, 4]$››
-  // addConstraint[Top, 1, 2]
-  // addConstraint[Top, 2, 3]
-
-  // addConstraint[Top, 0, 4]
-  // addConstraint[Top, 1, 2]
-  // addConstraint[Top, 3, 3]
-
-  // addConstraint[Top, 0, 4]
-  // addConstraint[Top, 1, 3]
-  // addConstraint[Top, 2, 1]
-
-  // addConstraint[Top, 0, 4]
-  // addConstraint[Top, 1, 3]
-  // addConstraint[Top, 2, 2]
-
-  // addConstraint[Top, 0, 4]
-  // addConstraint[Top, 1, 3]
-  // addConstraint[Top, 3, 1]
-
-  // addConstraint[Top, 0, 4]
-  // addConstraint[Top, 1, 3]
-  // addConstraint[Top, 3, 2]
 }
 
-
+// predicate to ensure that every constraint is obeyed.
 pred satsConstraints {
   all c:Constraint | {
     obeysConstraint[c]
   }
 }
 
+// sample predicate to find sets of constraints with unique board layouts
 pred diagonal {
   all i:Int | {
     withinBounds[i] => {

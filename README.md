@@ -129,7 +129,7 @@ Interestingly, in the limited testing of isomorphism between Skyscraper and Alts
 #
 <img src="images/boardwithoutinner.png"  width="20%"> <img src="images/boardwithinner.png"  width="20%"> 
 
-Example of board isomorphism. The left board is a Skyscraper board with multiple solutions (one shown). The right board depicts the same solution annotated with every applicable AltSkyscraper hint. The model seemed to find that __all__ solutions to the left board must satisfy __all__ the AltSkyscraper hints on the right. That is, it is impossible to solve the left board without satisfying every individual inner constraint of the right board. 
+Example of board isomorphism. The left board is a Skyscraper board with multiple solutions (one shown). The right board depicts the same solution annotated with every applicable AltSkyscraper hint. The model seemed to find that _all_ solutions to the left board must satisfy _all_ the AltSkyscraper hints on the right. That is, it is impossible to solve the left board without satisfying every individual inner constraint of the right board. 
 
 #
 
@@ -166,6 +166,7 @@ Running this will solve the prescribed puzzle. The Sterling graph vizualizer is 
 <br>
 You can click "next" in Sterling and rerun the vizualizer to find alternate solutions (if any).
 
+<br>
 To find constraints for a specific board layout, you can do something similar (ex: constraints having 4s in the main diagonal):
 
     pred diagonal {
@@ -183,3 +184,14 @@ To find constraints for a specific board layout, you can do something similar (e
     } for exactly 16 Cell, 3 Constraint
 
 <img src="images/diagonal.png"  width="40%">
+
+
+## Workflows for our results
+
+### Uniqueness
+Using the files found in (alternate or original)_skyscraper/unique_boards/, the provided racket scripts invoke the solver with various arrangements of constraints. If a constraint is found to have only one satisfiable instance, then the parameters are printed with "SUCCESS", otherwise "f" is printed. These successful parameters are combinations of constraints which have unique solutions. Various constraint setups (ex: 2 constraints one side, 3 constraints, 2 constraints opposite sides) are present/commented out. They were run via:
+    racket find_unique_boards.rkt > XYZ_results.txt
+And then grep'd to find the SUCCESSes.
+
+### Isomorphism
+In joint_skyscraper/, the provided racket script attempts to find which interior constraints are not necessary to satisfy a given set of wall constraints. There is a hardcoded board example: it is trying to find out if different solutions to the board (obeysWallConstraint Top 3 1), (obeysWallConstraint Lft 1 3), (obeysWallConstraint Bot 0 1) can different interior constraints (basically, is it satisfiable to obey the wall constraints without obeying a given interior constraint). The interior constraints were hand scraped from a solution to the wall-constraint problem. It was found that all solutions to that board have the same exact interior constraints, which was suprising.

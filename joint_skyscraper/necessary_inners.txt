@@ -1,5 +1,10 @@
-Forge version: 2.7.0
-To report issues with Forge, please visit https://report.forge-fm.org
+Below are the interior constraints which are necessarily true for any solution to 4x4 puzzle with exterior constraints:
+(obeysWallConstraint Top 3 1)
+(obeysWallConstraint Lft 1 3)
+(obeysWallConstraint Bot 0 1)
+
+Interior constraints found on lines in format:
+"SUCCESS <wall> <hint> <row> <col>"
 
 #vars: (size-variables 605400); #primary: (size-primary 4880); #clauses: (size-clauses 896040)
 Transl (ms): (time-translation 12950); Solving (ms): (time-solving 1843) Core min (ms): (time-core 0)

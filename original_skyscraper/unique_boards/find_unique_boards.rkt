@@ -1,7 +1,8 @@
 #lang forge/core
 
-(require (only-in rackunit check-eq? check-not-eq?))
+;Each commented block below is checking for a different arangement of constraints. The breadth of parameters it needs to check is reduced via symmetries in the puzzle, and it basically calls forge to find two solutions for each arrangement - if its impossible to find a second, then we know the solution is unique.
 
+(require (only-in rackunit check-eq? check-not-eq?))
 
 ;(set-option! 'solver 'MiniSatProver)
 ;(set-option! 'logtranslation 1)

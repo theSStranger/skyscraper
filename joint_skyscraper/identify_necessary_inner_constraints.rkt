@@ -1,7 +1,14 @@
 #lang forge/core
 
-(require (only-in rackunit check-eq? check-not-eq?))
+; Program to find which inner constraints are necessarily true for any solution to a puzzle with the wall constraints specified below:
+;(obeysWallConstraint Top 3 1)
+;(obeysWallConstraint Lft 1 3)
+;(obeysWallConstraint Bot 0 1)
 
+; The long and ill-formatted statment on line 41 checks to see if it is possible to solve the above puzzle while simultaneously not solving a particular interior constraint (the interior constraints were scraped by hand from a solution to the above puzzle). See "necessary_inners.txt" for the output.
+
+
+(require (only-in rackunit check-eq? check-not-eq?))
 
 ;(set-option! 'solver 'MiniSatProver)
 ;(set-option! 'logtranslation 1)

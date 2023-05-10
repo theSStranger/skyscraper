@@ -10,7 +10,7 @@ In the end, the model could accurately find solutions to a given set of constrai
 
 Initially, we modelled the puzzle with both Constraints and Cells as sigs. This was cool because it allowed us to use our model in both directions: we could specify constraints and ask the model to give solutions (if any), or we could specify a board arrangement and ask the model for relevant constraints (ex: constraints with a solution that has '4's accross the main diagonal).
 
-When searching for unique solutions, the Constraint sig made it really hard for Forge to differentiate between identical solutions, so the sig was scrapped and constraints were prescribed just by their parameters. This allowed for our model to effectively discove puzzle boards of various kinds which have [unique solutions](#uniqueness), which was one of our target/reach goals. 
+When searching for unique solutions, the Constraint sig made it really hard for Forge to differentiate between identical solutions, so the sig was scrapped and constraints were prescribed just by their parameters. This allowed for our model to effectively discover puzzle boards of various kinds which have [unique solutions](#uniqueness), which was one of our target/reach goals. 
 
 We also wanted to experiment with our own version of Skyscraper (AltSkyscraper) that had interior constraints. This worked well - we made some cool observations about the [relationship between Skyscraper puzzles and AltSkyscraper](#isomorphism).
 
@@ -186,7 +186,7 @@ To find constraints for a specific board layout, you can do something similar (e
 <img src="images/diagonal.png"  width="40%">
 
 
-## Workflows for our results
+## How the results were found
 
 ### Uniqueness
 Using the files found in (alternate or original)_skyscraper/unique_boards/, the provided racket scripts invoke the solver with various arrangements of constraints. If a constraint is found to have only one satisfiable instance, then the parameters are printed with "SUCCESS", otherwise "f" is printed. These successful parameters are combinations of constraints which have unique solutions. Various constraint setups (ex: 2 constraints one side, 3 constraints, 2 constraints opposite sides) are present/commented out. They were run via:
@@ -195,3 +195,6 @@ And then grep'd to find the SUCCESSes.
 
 ### Isomorphism
 In joint_skyscraper/, the provided racket script attempts to find which interior constraints are not necessary to satisfy a given set of wall constraints. There is a hardcoded board example: it is trying to find out if different solutions to the board (obeysWallConstraint Top 3 1), (obeysWallConstraint Lft 1 3), (obeysWallConstraint Bot 0 1) can different interior constraints (basically, is it satisfiable to obey the wall constraints without obeying a given interior constraint). The interior constraints were hand scraped from a solution to the wall-constraint problem. It was found that all solutions to that board have the same exact interior constraints, which was suprising.
+
+## Files
+Corresponding folders contain files needed for (Alt)Skyscraper. Files marked "V2" are identical to the non-V2 versions, except they do not use Sigs to describe Constraints.

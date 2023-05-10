@@ -49,6 +49,39 @@ test suite for satsConstraints {
 
     // known board that has exactly one solution, should find it
     knownUniqueSln: {boardSetup[4] and addConstraint[Rgt, 0, 3] and addConstraint[Rgt, 1, 2] and addConstraint[Rgt, 3, 4] and satsConstraints} for exactly 16 Cell is sat
+
+    //satisfying a constraint implies certain cells can be seen
+    trulyObeysConstraints: {(boardSetup[4] and addConstraint[Lft, 3, 4] and satsConstraints) => {
+      canBeSeen[Board.position[3][0], Lft] and 
+      canBeSeen[Board.position[3][1], Lft] and 
+      canBeSeen[Board.position[3][2], Lft] and 
+      canBeSeen[Board.position[3][3], Lft]}} for exactly 16 Cell is theorem
+
+    //satisfying a constraint implies certain cells can be seen
+    trulyObeysConstraints2: {(boardSetup[4] and addConstraint[Rgt, 3, 4] and satsConstraints) => {
+      canBeSeen[Board.position[3][0], Rgt] and 
+      canBeSeen[Board.position[3][1], Rgt] and 
+      canBeSeen[Board.position[3][2], Rgt] and 
+      canBeSeen[Board.position[3][3], Rgt]}} for exactly 16 Cell is theorem
+
+    //satisfying a 3 constraint means only one cell cannot be seen
+    trulyObeysConstraints3: {(boardSetup[4] and addConstraint[Top, 3, 3] and satsConstraints) => {
+      one i:Int | {
+        withinBounds[i]
+        not canBeSeen[Board.position[i][3], Top]
+      }}
+      } for exactly 16 Cell is theorem
+
+    //satisfying a 2 constraint means only two cells cannot be seen
+    trulyObeysConstraints4: {(boardSetup[4] and addConstraint[Bot, 2, 2] and satsConstraints) => {
+      one disj i,j:Int | {
+        i>j //need to include this since otherwise both (i,j) and (j,i) are valid, which breaks the 'one' constraint
+        withinBounds[i]
+        withinBounds[j]
+        not canBeSeen[Board.position[i][2], Bot]
+        not canBeSeen[Board.position[j][2], Bot]
+      }}
+      } for exactly 16 Cell is theorem
   }
 }
 

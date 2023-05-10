@@ -154,7 +154,7 @@ pred obeysWallConstraint[const : one WallConstraint] {
   // # of cells which can be seen on that specific row/col obeys the hint
   #{c:Cell | { 
     (const.wall = Top or const.wall = Bot) => {c.cell_col = const.index} else {c.cell_row = const.index}
-    canBeSeen[c, const.wall, 0]
+    (const.wall = Top or const.wall = Lft) => {canBeSeen[c, const.wall, 0]} else {canBeSeen[c, const.wall, subtract[Board.size, 1]]}
     }} = const.hint
 }
 
@@ -166,11 +166,20 @@ pred obeysInteriorConstraint[const : one InteriorConstraint] {
     }} = const.hint
 }
 
-pred addConstraint[w:Wall, i:Int, h:Int] {
-  one c: Constraint | {
+pred addWallConstraint[w:Wall, i:Int, h:Int] {
+  one c: WallConstraint | {
     c.wall = w
     c.index = i
     c.hint = h
+  }
+}
+
+pred addInteriorConstraint[w:Wall, r:Int, c:Int, h:Int] {
+  one wc: InteriorConstraint | {
+    wc.wall = w
+    wc.const_row = r
+    wc.const_col = c
+    wc.hint = h
   }
 }
 

@@ -1,6 +1,6 @@
 #lang forge
 
-// open "common_definitions.frg"
+// this was the failed attempt to make a Skyscraper solving assistant, making one move at a time. We realized that you would need to encode "human" solving logic, which kinda defeats the purpose of using Forge.
 
 option problem_type temporal
 

@@ -140,101 +140,13 @@ pred addConstraint[w:Wall, i:Int, h:Int] {
 
 // here, fill in the board situation
 pred puzzleConstraints {
-  // addConstraint[Top, 0, 1]
-  // addConstraint[Top, 1, 3]
-  // addConstraint[Top, 2, 4]
+  addConstraint[Top, 1, 3]
+  addConstraint[Top, 3, 1]
+  addConstraint[Bot, 0, 1]
+  addConstraint[Lft, 1, 3]
+  addConstraint[Lft, 2, 2]
+  addConstraint[Lft, 3, 1]
 
-  // addConstraint[Top, 0, 1]
-  // addConstraint[Top, 1, 3]
-  // addConstraint[Top, 3, 4]
-
-  // addConstraint[Top, 0, 1]
-  // addConstraint[Top, 1, 4]
-  // addConstraint[Top, 2, 3]
-
-  // addConstraint[Top, 0, 1]
-  // addConstraint[Top, 1, 4]
-  // addConstraint[Top, 3, 3]
-
-  // addConstraint[Top, 0, 2]
-  // addConstraint[Top, 1, 3]
-  // addConstraint[Top, 2, 4]
-
-  // addConstraint[Top, 0, 2]
-  // addConstraint[Top, 1, 3]
-  // addConstraint[Top, 3, 4]
-
-  addConstraint[Top, 0, 2]
-  addConstraint[Top, 1, 4]
-  addConstraint[Top, 2, 3]
-
-  // addConstraint[Top, 0, 2]
-  // addConstraint[Top, 1, 4]
-  // addConstraint[Top, 3, 3]
-
-  // addConstraint[Top, 0, 3]
-  // addConstraint[Top, 1, 1]
-  // addConstraint[Top, 2, 4]
-
-  // addConstraint[Top, 0, 3]
-  // addConstraint[Top, 1, 1]
-  // addConstraint[Top, 3, 4]
-
-  // addConstraint[Top, 0, 3]
-  // addConstraint[Top, 1, 2]
-  // addConstraint[Top, 2, 4]
-
-  // addConstraint[Top, 0, 3]
-  // addConstraint[Top, 1, 2]
-  // addConstraint[Top, 3, 4]
-
-  // addConstraint[Top, 0, 3]
-  // addConstraint[Top, 1, 4]
-  // addConstraint[Top, 2, 1]
-
-  // addConstraint[Top, 0, 3]
-  // addConstraint[Top, 1, 4]
-  // addConstraint[Top, 2, 2]
-
-  // addConstraint[Top, 0, 3]
-  // addConstraint[Top, 1, 4]
-  // addConstraint[Top, 3, 1]
-
-  // addConstraint[Top, 0, 3]
-  // addConstraint[Top, 1, 4]
-  // addConstraint[Top, 3, 2]
-
-  // addConstraint[Top, 0, 4]
-  // addConstraint[Top, 1, 1]
-  // addConstraint[Top, 2, 3]
-
-  // addConstraint[Top, 0, 4]
-  // addConstraint[Top, 1, 1]
-  // addConstraint[Top, 3, 3]
-
-  // addConstraint[Top, 0, 4]$››
-  // addConstraint[Top, 1, 2]
-  // addConstraint[Top, 2, 3]
-
-  // addConstraint[Top, 0, 4]
-  // addConstraint[Top, 1, 2]
-  // addConstraint[Top, 3, 3]
-
-  // addConstraint[Top, 0, 4]
-  // addConstraint[Top, 1, 3]
-  // addConstraint[Top, 2, 1]
-
-  // addConstraint[Top, 0, 4]
-  // addConstraint[Top, 1, 3]
-  // addConstraint[Top, 2, 2]
-
-  // addConstraint[Top, 0, 4]
-  // addConstraint[Top, 1, 3]
-  // addConstraint[Top, 3, 1]
-
-  // addConstraint[Top, 0, 4]
-  // addConstraint[Top, 1, 3]
-  // addConstraint[Top, 3, 2]
 }
 
 
@@ -253,8 +165,8 @@ pred satsConstraints {
 // }
 
 run {
-  puzzleConstraints
-  boardSetup[4]
+  // puzzleConstraints
+  boardSetup[7]
   satsConstraints
   // diagonal
-} for exactly 16 Cell, 3 Constraint
+} for exactly 49 Cell, 0 Constraint

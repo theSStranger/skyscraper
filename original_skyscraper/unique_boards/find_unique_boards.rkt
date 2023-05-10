@@ -90,7 +90,7 @@
 
 |#
 
-
+#|
 ;4 constraints:
 (define (run-constraint ind hnt ind2 hnt2 ind3 hnt3 ind4 hnt4)
      (run slnFind
@@ -118,5 +118,33 @@
          [hint3 (in-range 1 5)]
          [hint4 (in-range 1 5)])
     (run-constraint 0 hint 1 hint2 2 hint3 3 hint4))
+
+|#
+
+;2 Constraints opposite sides:
+
+(define (run-constraint ind hnt ind2 hnt2)
+     (run slnFind
+          #:preds[
+               (boardSetup 4)
+               (obeysConstraint Top ind hnt)
+               (obeysConstraint Bot ind2 hnt2)
+               ]
+          #:scope[(Cell 16 16)])
+     (define slnFind-gen (forge:make-model-generator (forge:get-result slnFind) 'next))
+
+     (define a1 (slnFind-gen))
+     (define a2 (slnFind-gen))
+
+     (if (and (Sat? a1) (not (Sat? a2))) (printf "SUCCESS ~v ~v ~v ~v " ind hnt ind2 hnt2) (printf "f ~v" hnt))
+     (forge:close-run slnFind)
+)
+
+(for* (
+         [ind (in-range 1 3)]
+         [hnt (in-range 1 5)]
+         [ind2 (in-range ind 5)]
+         [hnt2 (in-range 1 5)])
+    (run-constraint ind hnt ind2 hnt2))
 
 ;(run-constraint 0 0)

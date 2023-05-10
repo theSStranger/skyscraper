@@ -1,4 +1,4 @@
-#lang forge "Filip" "Skyscraper Final Proj"
+#lang forge
 
 // Cell Sig, stores position and value
 sig Cell {
@@ -21,22 +21,6 @@ one sig Board {
     size : one Int
 }
 
-abstract sig Constraint {
-  wall : one Wall,
-  hint : one Int
-}
-
-// Constraint Sig, stores game constraint including which wall, which index on 
-//that wall, and what the hint is
-sig WallConstraint extends Constraint{
-  index : one Int
-}
-
-sig InteriorConstraint extends Constraint {
-  const_row : one Int,
-  const_col : one Int
-}
-
 // Checks that an index is within the board's bounds
 pred withinBounds[n : Int] {
   n >= 0
@@ -47,37 +31,6 @@ pred withinBounds[n : Int] {
 // (all constraints that are not specific to a single puzzle instance)
 pred boardSetup[s : Int] {
   Board.size = s
-  
-  // constraints are valid
-  all c: WallConstraint | {
-    withinBounds[c.index]
-    c.hint > 0
-    c.hint <= Board.size
-  }
-
-  // cant have 2 constraints on the same slot
-  all disj c1, c2: WallConstraint | {
-    (c1.wall != c2.wall) or (c1.index != c2.index) 
-  }
-
-  // all interior constraints are valid
-  all c: InteriorConstraint | {
-    withinBounds[c.const_row]
-    withinBounds[c.const_col]
-    c.hint > 0
-    // TODO: constraint this further to be <= the number of cells visible in given dir?
-    c.hint <= Board.size
-    (c.wall = Top) => (c.const_row > 0)
-    (c.wall = Bot) => (c.const_row < subtract[Board.size,1])
-    (c.wall = Lft) => (c.const_col > 0)
-    (c.wall = Rgt) => (c.const_col < subtract[Board.size,1])
-
-  }
-
-  // interior constraints cant be facing same dir if in same cell
-  all disj c1, c2: InteriorConstraint | {
-    ((c1.const_row = c2.const_row) and (c1.const_col = c2.const_col)) => {c1.wall != c2.wall}
-  }
 
   all c:Cell | {
     // If you go to that row/col you get the cell
@@ -150,77 +103,18 @@ pred canBeSeen[c : Cell, w: Wall, i: Int] {
 }
 
 // checks that a board constraint is sat
-pred obeysWallConstraint[const : one WallConstraint] {
+pred obeysWallConstraint[wl:Wall, ht:Int, ix:Int] {
   // # of cells which can be seen on that specific row/col obeys the hint
   #{c:Cell | { 
-    (const.wall = Top or const.wall = Bot) => {c.cell_col = const.index} else {c.cell_row = const.index}
-    canBeSeen[c, const.wall, 0]
-    }} = const.hint
+    (wl = Top or wl = Bot) => {c.cell_col = sum[ix]} else {c.cell_row = sum[ix]}
+    canBeSeen[c, wl, sum[0]]
+    }} = sum[ht]
 }
 
 // checks that an inner constraint is sat
-pred obeysInteriorConstraint[const : one InteriorConstraint] {
+pred notObeysInteriorConstraint[wl:Wall, ht:Int, icr:Int, icc:Int] {
   // # of cells which can be seen on that specific row/col obeys the hint
-  #{c:Cell | { 
-    (const.wall = Top or const.wall = Bot) => {c.cell_col = const.const_col and canBeSeen[c, const.wall, const.const_row]} else {c.cell_row = const.const_row and canBeSeen[c, const.wall, const.const_col]}
-    }} = const.hint
+  not #{c:Cell | { 
+    (wl = Top or wl = Bot) => {c.cell_col = sum[icc] and canBeSeen[c, wl, sum[icr]]} else {c.cell_row = sum[icr] and canBeSeen[c, wl, sum[icc]]}
+    }} = sum[ht]
 }
-
-pred addConstraint[w:Wall, i:Int, h:Int] {
-  one c: Constraint | {
-    c.wall = w
-    c.index = i
-    c.hint = h
-  }
-}
-
-// here, fill in the board situation
-pred puzzleConstraints {
-  one c:InteriorConstraint | {
-    c.wall = Top
-    c.const_row = 1
-    c.const_col = 1
-    c.hint = 2
-  }
-
-  one c:InteriorConstraint | {
-    c.wall = Rgt
-    c.const_row = 2
-    c.const_col = 2
-    c.hint = 2
-  }
-
-  one c:InteriorConstraint | {
-    c.wall = Bot
-    c.const_row = 2
-    c.const_col = 3
-    c.hint = 2
-  }
-}
-
-
-pred satsConstraints {
-  all c:InteriorConstraint | {
-    obeysInteriorConstraint[c]
-  }
-
-  all c:WallConstraint | {
-    obeysWallConstraint[c]
-  }
-}
-
-pred diagonal {
-  all i: Int | {
-    withinBounds[i] => {
-      (Board.position[i][i]).val = 4
-    }
-  }
-}
-
-run {
-  // puzzleConstraints
-  boardSetup[4]
-  satsConstraints
-  diagonal
-  #{w:InteriorConstraint | 1=1} = 3
-} for exactly 16 Cell, 3 InteriorConstraint, 0 WallConstraint

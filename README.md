@@ -133,7 +133,7 @@ Example of board isomorphism. The left board is a Skyscraper board with multiple
 
 #
 
-Essentially, it is impossible to satisfy all the exterior constraints without also satisfying each individual interior constraint. This is an interesting finding since it means that the representation of a Skyscraper game might be fully explicable using only AltSkyscraper constraints. The model seems to suggest that the edge constraints of a Skyscraper Puzzle completely determine the corresponding interior constraints of an AltSkyscraper puzzle. 
+Essentially, it is impossible to satisfy all the exterior constraints without also satisfying each individual interior constraint. This is an interesting finding since it means that the representation of a Skyscraper game might be fully explicable using only AltSkyscraper constraints. While we found examples where this is not the case, it's interesting that for the above example this is true and it would be interesting to use our model to try and identify which interior constraints are necessarily true for a given Skyscraper puzzle and which are not.  
 
 All of these results for both uniqueness and isomorphism were for 4x4 boards. There may be (and likely are) different findings for other board dimensions.
 
